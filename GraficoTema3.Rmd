@@ -37,11 +37,16 @@ sp <- datos[datos$location == "Spain",]
 df <- rbind(us, it, fr, ge, ca, ja, uk)
 
 # Convertir la columna 'date' a formato de fecha
-df$date <- as.Date(df$date)
+df$date <- as.Date(df$date, format = "%Y-%m-%d")
 
+```
+
+
+```{r}
 # Creamos el gráfico con la información. En el eje 'x' ponemos las fechas (que
 # se vea el tiempo) y en el eje 'y' las muertes por millón. Cogemos smoothed
 # para que salga el gráfico más adecuado.
+
 gr <- ggplot(df, mapping = aes(x = date, y = new_deaths_smoothed_per_million, 
                                group = location))
 
@@ -64,6 +69,9 @@ gr_final<- gr_col_fecha +
   # Quitamos la leyenda
   theme(legend.position = "none")
 
-# Lo mostramos y que sea interactivo (ggplotly)
-ggplotly(gr_final)
+gr_interactivo <- ggplotly(gr_final)
+
+# Mostrar el gráfico interactivo
+gr_interactivo
 ```
+
