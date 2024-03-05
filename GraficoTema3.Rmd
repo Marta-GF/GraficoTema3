@@ -18,7 +18,7 @@ suppressWarnings({ #Para que no salgan los warnings
 })
 
 # Importamos la información
-datos <- read.csv("owid-covid-data.csv") 
+datos <- read.csv("owid-covid-data.csv")
 ```
 
 ```{r}
