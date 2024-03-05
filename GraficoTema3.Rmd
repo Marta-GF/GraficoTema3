@@ -59,6 +59,7 @@ gr <- ggplot(df, mapping = aes(x = date, y = new_deaths_smoothed_per_million,
 # añadiremos España)
 gr_col <- gr + geom_line(aes(colour = location))
 
+
 # Ponemos como se va a mostrar la fecha
 gr_col_fecha <- gr_col + scale_x_date(date_labels = "%d %m %Y") + 
   labs(x = "",y = "")
@@ -77,10 +78,8 @@ gr_final<- gr_col_fecha +
 
 
 ```{r}
-gr_interactivo <- ggplotly(gr_final)
-
-# Mostrar el gráfico interactivo
-gr_interactivo
+# Mostrar el gráfico interactivov
+ ggplotly(gr_final)
 
 ```
 
