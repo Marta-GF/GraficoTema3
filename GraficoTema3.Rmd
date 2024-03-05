@@ -2,7 +2,9 @@
 title: 'Proyecto visualización: Imagen Covid'
 author: "Grupo K"
 date: "2024-03-05"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -37,6 +39,9 @@ sp <- datos[datos$location == "Spain",]
 df <- rbind(us, it, fr, ge, ca, ja, uk)
 
 # Convertir la columna 'date' a formato de fecha
+sp$date <- as.Date(sp$date, format = "%Y-%m-%d")
+
+# Asegurarse de que la columna 'date' en el conjunto de datos df ya esté en formato de fecha
 df$date <- as.Date(df$date, format = "%Y-%m-%d")
 
 ```
@@ -64,14 +69,18 @@ gr_final<- gr_col_fecha +
   
   # Añadimos España más grueso y de color rojo
   geom_line(data = sp, aes(x = date, y = new_deaths_smoothed_per_million), 
-            color = "red", size = 0.75) + 
+            color = "red", linewidth = 0.75) + 
   
   # Quitamos la leyenda
   theme(legend.position = "none")
+```
 
+
+```{r}
 gr_interactivo <- ggplotly(gr_final)
 
 # Mostrar el gráfico interactivo
 gr_interactivo
+
 ```
 
