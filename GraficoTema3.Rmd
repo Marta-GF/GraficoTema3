@@ -16,6 +16,8 @@ Seguidamente importaremos la información con la que vamos a trabajar y la guard
 (que será el data frame con el que vamos a trabajar) la cual se llamará 'datos'.
 
 ```{r}
+rm(list=ls()) 
+
 #Cargamos las librerías
 
 #Para que no salgan los warnings:
@@ -65,10 +67,10 @@ Ahora, convertimos la columna 'date' de España a formato fecha.
 
 ```{r}
 #Convertir la columna 'date' a formato de fecha
-#sp$date <- as.Date(sp$date, format = "%Y-%m-%d")
+sp$date <- as.Date(sp$date, format = "%Y-%m-%d")
 
 #Asegurarse de que la columna 'date' en el conjunto de datos df ya esté en formato de fecha.
-#df$date <- as.Date(df$date, format = "%Y-%m-%d")
+df$date <- as.Date(df$date, format = "%Y-%m-%d")
 
 ```
 
@@ -92,21 +94,24 @@ gr_col_fecha <- gr_col + scale_x_date(date_labels = "%m %d, %Y")
 #Añadimos nombres a los ejes además del título y subtítulo.
 #Establecemos 'caption' donde quedará reflejada la fuente de los datos:
 
-gr_final <- gr_col_fecha + 
-  labs(title = "Daily new confirmed COVID-19 deaths per million people", 
-       subtitle = "7-day rolling average. For some countries the number of confirmed
-       deaths is much lower than the true number of deaths. This is because of limited
-       testing and challenges in the attribution of the cause of death",
-       x = "date", y = "new_deaths_smoothed_per_million", 
-       caption = "Source: Johns Hopkins University CSSE COVID-19 Data") +
+gr_final <- gr_col_fecha + labs(title = "Grupo K", 
+                                subtitle = "7-day rolling average. For some countries the number of confirmed deaths is much lower than the true number of deaths. 
+                                This is because of limited testing and challenges in the attribution of the cause of death",
+                                x = "date", y = "new_deaths_smoothed_per_million", 
+                                caption = "Source: Johns Hopkins University CSSE COVID-19 Data") +
   
   # Añadimos España más grueso y de color rojo
   geom_line(data = sp, aes(x = date, y = new_deaths_smoothed_per_million), 
-            color = "red", linewidth = 1.2) 
+            color = "red", linewidth = 1.2) + theme(legend.position = "none")
 
 #Quitamos la leyenda
-theme(legend.position = "ninguno")
-  
+
+#Hacemos el subtítulo más pequeño para que se visualice
+#de manera correcta:
+gr_final <- gr_final + theme(plot.subtitle = element_text(size = 8))
+
+#Visualizamos gráfico sin ser interactivo primero:
+gr_final
 ```
 
 A continuación, una vez hemos terminado nuestro gráfico, vamos a hacerlo interactivo. 
@@ -116,8 +121,8 @@ como por ejemplo las muertes exactas en un determiando pais en un día en concre
 Esto nos permite extraer conclusiones mucho más específicas.
 
 ```{r}
- ggplotly(gr_final)
-
+final <- ggplotly(gr_final)
+final
 ```
 A través de nuestro gráfico, podemos extraer una serie de conclusiones. 
 En el 2020, España y Reino Unido tuvieron algunos de sus picos más altos, es decir, un mayor número de muertes. 
