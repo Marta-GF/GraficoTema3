@@ -22,7 +22,7 @@ datos <- read.csv("owid-covid-data.csv")
 ```
 
 ```{r}
-# Cargamos los países que tenemos que mostrar
+# Cargamos los países que tenemos que mostrar según el enunciado
 us <- datos[datos$location == "United States",] 
 it <- datos[datos$location == "Italy",] 
 fr <- datos[datos$location == "France",]
