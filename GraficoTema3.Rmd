@@ -10,7 +10,7 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-
+En primer lugar vamos a cargar todas las librerías que necesitamos y además vamos a 'quitar' los warnings que nos puedan aparecer. Seguidamente importaremos la información con la que vamos a trabajar y la guardaremos en una variable (que será el data frame con el que vamos a trabajar) la cual se llamará 'datos'.
 ```{r}
 # Cargamos las librerías
 suppressWarnings({ #Para que no salgan los warnings
@@ -23,6 +23,7 @@ suppressWarnings({ #Para que no salgan los warnings
 datos <- read.csv("owid-covid-data.csv")
 ```
 
+A continuación seleccionamos y cargamos los paises que tenemos que mostrar en nuestro gráfico según el enunciado, los cuales son: "United States", "Italy", "France", "Germany", "Canada", "Japan", "United Kingdom" y "Spain".
 ```{r}
 # Cargamos los países que tenemos que mostrar según el enunciado
 us <- datos[datos$location == "United States",] 
@@ -33,16 +34,22 @@ ca <- datos[datos$location == "Canada",]
 ja <- datos[datos$location == "Japan",]
 uk <- datos[datos$location == "United Kingdom",]
 sp <- datos[datos$location == "Spain",]
+```
 
+Una vez ya hemos seleccioando los paises que vamos a representar creamos un nuevo data frame únicamenete con la información de estos. Este nuevo data frame se va llamar 'df' 
+```{r}
 # Creamos un nuevo data frame con los datos que nos interesan
 # (España lo añadimos más tarde, puesto que tiene un grosor distinto)
 df <- rbind(us, it, fr, ge, ca, ja, uk)
+```
 
+Ahora, convertimos la columna ;dateñ de España a formato fecha.
+```{r}
 # Convertir la columna 'date' a formato de fecha
-sp$date <- as.Date(sp$date, format = "%Y-%m-%d")
+#sp$date <- as.Date(sp$date, format = "%Y-%m-%d")
 
 # Asegurarse de que la columna 'date' en el conjunto de datos df ya esté en formato de fecha
-df$date <- as.Date(df$date, format = "%Y-%m-%d")
+#df$date <- as.Date(df$date, format = "%Y-%m-%d")
 
 ```
 
@@ -61,25 +68,23 @@ gr_col <- gr + geom_line(aes(colour = location))
 
 
 # Ponemos como se va a mostrar la fecha
-gr_col_fecha <- gr_col + scale_x_date(date_labels = "%d %m %Y") + 
+gr_col_fecha <- gr_col + scale_x_date(date_labels = "%m %d, %Y") + 
   labs(x = "",y = "")
 
 # Ponemos el título
 gr_final<- gr_col_fecha + 
   ggtitle("Daily new confirmed COVID-19 deaths per million people") + 
   
-  # Añadimos España más grueso y de color rojo
+# Añadimos España más grueso y de color rojo
   geom_line(data = sp, aes(x = date, y = new_deaths_smoothed_per_million), 
-            color = "red", linewidth = 0.75) + 
+            color = "red", linewidth = 1.2)  
   
-  # Quitamos la leyenda
-  theme(legend.position = "none")
+# Quitamos la leyenda
+  #theme(legend.position = "none")
 ```
 
-
+A continuación, una vez ya hemos terminado nuestro gráfico, vamos a hacerlo interactivo. Esto lo conseguimos con la función 'ggplotly()' pasándole como argumento el nombre de nuestro gráfico, en este caso: "gr_final". De esta manera, podemos observar de manera más detallada la información que este contiene, como por ejemplo las muertes exactas en un determiando pais en un día en concreto. Esto nos permite extraer conclusiones mucho más específicas.
 ```{r}
-# Mostrar el gráfico interactivov
  ggplotly(gr_final)
-
 ```
-
+A través de nuestro gráfico, podemos extraer una serie de conclusiones. En el 2020, España y Reino Unido tuvieron algunos de sus picos más altos, es decir, un mayor número de muertes. En el caso de Reino Unido, este suceso se repitió en 2021. Por otra parte la tendencia de muerte de los demás paises es muy similar entre todos estos, el 2021 es donde la mayoría se encuentran más afectados en general, y en concreto Japon despunta en el 2023 con otro pico considerablemente alto de muertes, mientras que los otros paises siguen una tendencia de descenso, en cuanto a muertes por COVID se refiere, la cual se mantiene en la mayoría de los casos en este 2024.
