@@ -90,7 +90,7 @@ gr_col <- gr + geom_line(aes(color = location))
 
 #Ponemos como se va a mostrar la fecha:
 gr_col_fecha <- gr_col + scale_x_date(date_labels = "%b %d, %Y") +
-  scale_y_continuous(breaks=seq(0, 18, by=2))
+  scale_y_continuous(breaks=seq(0, 18, by=2)) + geom_hline(yintercept = c(2, 4, 6, 8, 10, 12, 14, 16, 18), color = "gray80", linetype = "dashed")
 
 #Añadimos nombres a los ejes además del título y subtítulo.
 #Establecemos 'caption' donde quedará reflejada la fuente de los datos:
@@ -103,7 +103,9 @@ gr_final <- gr_col_fecha + labs(title = "Daily new confirmed COVID-19 deaths per
   
   # Añadimos España más grueso y de color rojo
   geom_line(data = sp, aes(x = date, y = new_deaths_smoothed_per_million), 
-            color = "red", linewidth = 1.2) 
+            color = "red", linewidth = 1.2) +
+  #Fondo en blanco
+  theme_classic()
 
 #Quitamos la leyenda + theme(legend.position = "none")
 
