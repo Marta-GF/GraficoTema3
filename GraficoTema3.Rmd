@@ -85,8 +85,8 @@ gr <- ggplot(df, mapping = aes(x = date, y = new_deaths_smoothed_per_million,
                                group = location))
 
 #Definimos los colores del enunciado
-colores <- c("United States" = "mediumpurple4", "Italy" = "aquamarine3", 
-             "France" = "orange3", "Germany" ="palegreen4", "Canada" = "tomato4",
+colores <- c("United States" = "mediumpurple3", "Italy" = "aquamarine3", 
+             "France" = "orange3", "Germany" ="green4", "Canada" = "tomato4",
              "Japan" = "steelblue4", "United Kingdom" = "violetred1")
 
 #Añadimos linea con color a los países, color según país (más tarde 
@@ -107,18 +107,17 @@ gr_col_fecha <- gr_col + scale_x_date(date_labels = "%b %d, %Y") +
 #Establecemos 'caption' donde quedará reflejada la fuente de los datos:
 
 gr_final <- gr_col_fecha + labs(title = "Daily new confirmed COVID-19 deaths per million people - Grupo K", 
-                                subtitle = "7-day rolling average. For some countries the number of confirmed deaths is much lower than the true number of deaths. 
+  subtitle = "7-day rolling average. For some countries the number of confirmed deaths is much lower than the true number of deaths. 
                                 This is because of limited testing and challenges in the attribution of the cause of death",
-                                x = "Time", y = "New Deaths per Million", 
-                                caption = "Source: Johns Hopkins University CSSE COVID-19 Data") +
+  x = "Time", y = "New Deaths per Million", 
+caption = "Source: Johns Hopkins University CSSE COVID-19 Data") +
   
   # Añadimos España más grueso y de color rojo
   geom_line(data = sp, aes(x = date, y = new_deaths_smoothed_per_million), 
-            color = "red", linewidth = 1.2) +
-  #Fondo en blanco
-  theme_classic()
+            color = "red", linewidth = 1.1) + theme_classic()
 
-#Quitamos la leyenda + theme(legend.position = "none")
+#Con la función 'theme_classic' ponemos el fondo en blanco
+  
 
 #Hacemos el subtítulo más pequeño para que se visualice
 #de manera correcta:
@@ -129,16 +128,13 @@ gr_final
 ```
 
 A continuación, una vez hemos terminado nuestro gráfico, vamos a hacerlo interactivo. 
-Esto lo conseguimos con la función 'ggplotly()' pasándole como argumento el nombre de nuestro gráfico, 
-en este caso: "gr_final". De esta manera, podemos observar de manera más detallada la información que este contiene, 
-como por ejemplo las muertes exactas en un determiando pais en un día en concreto. 
-Esto nos permite extraer conclusiones mucho más específicas.
+Esto lo conseguimos con la función 'ggplotly()' pasándole como argumento el nombre de nuestro gráfico, en este caso: "gr_final". De esta manera, podemos observar de manera más detallada la información que este contiene, como por ejemplo las muertes exactas en un determiando pais en un día en concreto. Esto nos permite extraer conclusiones mucho más específicas.
 
 ```{r}
 # Convertimos a gráfico interactivo con plotly
 final <- ggplotly(gr_final)
 
-# Añadimos subtítulo, leyenda y caption
+# Añadimos subtítulo, leyenda y caption al gráfico interactivo. 
 final <- final %>%
   layout(
     legend = list(title = list(text = "Country")),
