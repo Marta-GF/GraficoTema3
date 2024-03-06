@@ -94,7 +94,7 @@ gr_col_fecha <- gr_col + scale_x_date(date_labels = "%m %d, %Y")
 #Añadimos nombres a los ejes además del título y subtítulo.
 #Establecemos 'caption' donde quedará reflejada la fuente de los datos:
 
-gr_final <- gr_col_fecha + labs(title = "Grupo K", 
+gr_final <- gr_col_fecha + labs(title = "Daily new confirmed COVID-19 deaths per million people - Grupo K", 
                                 subtitle = "7-day rolling average. For some countries the number of confirmed deaths is much lower than the true number of deaths. 
                                 This is because of limited testing and challenges in the attribution of the cause of death",
                                 x = "date", y = "new_deaths_smoothed_per_million", 
@@ -102,9 +102,9 @@ gr_final <- gr_col_fecha + labs(title = "Grupo K",
   
   # Añadimos España más grueso y de color rojo
   geom_line(data = sp, aes(x = date, y = new_deaths_smoothed_per_million), 
-            color = "red", linewidth = 1.2) + theme(legend.position = "none")
+            color = "red", linewidth = 1.2) 
 
-#Quitamos la leyenda
+#Quitamos la leyenda + theme(legend.position = "none")
 
 #Hacemos el subtítulo más pequeño para que se visualice
 #de manera correcta:
