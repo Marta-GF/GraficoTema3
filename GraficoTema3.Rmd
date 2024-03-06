@@ -40,7 +40,7 @@ A continuación, seleccionamos y cargamos los países que tenemos que mostrar en
 ```{r}
 #Cargamos los países que tenemos que mostrar según el enunciado:
 
-us <- datos[datos$location == "United States",] 
+us <- datos[datos$location == "United States",]
 it <- datos[datos$location == "Italy",] 
 fr <- datos[datos$location == "France",]
 ge <- datos[datos$location == "Germany",]
