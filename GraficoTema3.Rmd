@@ -89,7 +89,7 @@ gr_col <- gr + geom_line(aes(color = location))
 
 
 #Ponemos como se va a mostrar la fecha:
-gr_col_fecha <- gr_col + scale_x_date(date_labels = "%m %d, %Y") 
+gr_col_fecha <- gr_col + scale_x_date(date_labels = "%b %d, %Y") 
 
 #Añadimos nombres a los ejes además del título y subtítulo.
 #Establecemos 'caption' donde quedará reflejada la fuente de los datos:
@@ -97,7 +97,7 @@ gr_col_fecha <- gr_col + scale_x_date(date_labels = "%m %d, %Y")
 gr_final <- gr_col_fecha + labs(title = "Daily new confirmed COVID-19 deaths per million people - Grupo K", 
                                 subtitle = "7-day rolling average. For some countries the number of confirmed deaths is much lower than the true number of deaths. 
                                 This is because of limited testing and challenges in the attribution of the cause of death",
-                                x = "date", y = "new_deaths_smoothed_per_million", 
+                                x = "Time", y = "New Deaths per Million", 
                                 caption = "Source: Johns Hopkins University CSSE COVID-19 Data") +
   
   # Añadimos España más grueso y de color rojo
