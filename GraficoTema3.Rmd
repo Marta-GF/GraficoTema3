@@ -89,7 +89,8 @@ gr_col <- gr + geom_line(aes(color = location))
 
 
 #Ponemos como se va a mostrar la fecha:
-gr_col_fecha <- gr_col + scale_x_date(date_labels = "%b %d, %Y") 
+gr_col_fecha <- gr_col + scale_x_date(date_labels = "%b %d, %Y") +
+  scale_y_continuous(breaks=seq(0, 18, by=2))
 
 #Añadimos nombres a los ejes además del título y subtítulo.
 #Establecemos 'caption' donde quedará reflejada la fuente de los datos:
