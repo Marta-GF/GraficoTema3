@@ -69,7 +69,8 @@ Ahora, convertimos la columna 'date' de España a formato fecha.
 #Convertir la columna 'date' a formato de fecha
 sp$date <- as.Date(sp$date, format = "%Y-%m-%d")
 
-#Asegurarse de que la columna 'date' en el conjunto de datos df ya esté en formato de fecha.
+#Asegurarse de que la columna 'date' en el conjunto de datos df ya esté en 
+#formato de fecha.
 df$date <- as.Date(df$date, format = "%Y-%m-%d")
 
 ```
@@ -83,15 +84,24 @@ df$date <- as.Date(df$date, format = "%Y-%m-%d")
 gr <- ggplot(df, mapping = aes(x = date, y = new_deaths_smoothed_per_million, 
                                group = location))
 
+#Definimos los colores del enunciado
+colores <- c("United States" = "mediumpurple4", "Italy" = "aquamarine3", 
+             "France" = "orange3", "Germany" ="palegreen4", "Canada" = "tomato4",
+             "Japan" = "steelblue4", "United Kingdom" = "violetred1")
+
 #Añadimos linea con color a los países, color según país (más tarde 
 #añadiremos España)
-gr_col <- gr + geom_line(aes(color = location))
-
+gr_col <- gr + geom_line(aes(color = location)) + 
+  
+  #Colores como en el ejemplo
+  scale_color_manual(values = colores)
 
 #Ponemos como se va a mostrar la fecha:
 gr_col_fecha <- gr_col + scale_x_date(date_labels = "%b %d, %Y") +
   #Para que vaya de 2 en 2 y el expand para que el 0 coincida con el eje x
-  scale_y_continuous(breaks=seq(0, 18, by=2), expand = c(0, 0)) + geom_hline(yintercept = c(2, 4, 6, 8, 10, 12, 14, 16, 18), color = "gray80", linetype = "dashed", size = 0.2)
+  scale_y_continuous(breaks=seq(0, 18, by=2), expand = c(0, 0)) + 
+  geom_hline(yintercept = c(2, 4, 6, 8, 10, 12, 14, 16, 18), color = "gray80", 
+             linetype = "dashed", size = 0.2)
 
 #Añadimos nombres a los ejes además del título y subtítulo.
 #Establecemos 'caption' donde quedará reflejada la fuente de los datos:
@@ -125,7 +135,7 @@ como por ejemplo las muertes exactas en un determiando pais en un día en concre
 Esto nos permite extraer conclusiones mucho más específicas.
 
 ```{r}
-final <- ggplotly(gr_final)
+final <- ggplotly(gr_final, tooltip="all", source="text")
 final
 ```
 A través de nuestro gráfico, podemos extraer una serie de conclusiones. 
