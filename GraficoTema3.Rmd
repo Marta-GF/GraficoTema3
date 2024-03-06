@@ -3,8 +3,8 @@ title: 'Proyecto visualización: Imagen Covid'
 author: "Grupo K"
 date: "2024-03-05"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -135,7 +135,31 @@ como por ejemplo las muertes exactas en un determiando pais en un día en concre
 Esto nos permite extraer conclusiones mucho más específicas.
 
 ```{r}
-final <- ggplotly(gr_final, tooltip="all", source="text")
+# Convertimos a gráfico interactivo con plotly
+final <- ggplotly(gr_final)
+
+# Añadimos subtítulo, leyenda y caption
+final <- final %>%
+  layout(
+    legend = list(title = list(text = "Country")),
+    title = list(text = "Daily new confirmed COVID-19 deaths per million people - Grupo K"),
+    xaxis = list(title = "Time"),
+    yaxis = list(title = "New Deaths per Million"),
+    caption = "Source: Johns Hopkins University CSSE COVID-19 Data",
+    annotations = list(
+      text = "7-day rolling average. For some countries the number of confirmed deaths is much
+      lower than the true number of deaths. This is because of limited testing and challenges
+      in the attribution of the cause of death",
+      x = 0.5,
+      y = 1.05,
+      xref = "paper",
+      yref = "paper",
+      showarrow = FALSE,
+      font = list(size = 10) #tamaño del subtítulo
+    )
+  )
+
+# Mostramos gráfico interactivo
 final
 ```
 A través de nuestro gráfico, podemos extraer una serie de conclusiones. 
