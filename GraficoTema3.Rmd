@@ -11,11 +11,11 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-En primer lugar vamos a cargar todas las librerías que necesitamos y además vamos a 'quitar' los warnings que nos puedan aparecer. 
-Seguidamente importaremos la información con la que vamos a trabajar y la guardaremos en una variable 
-(que será el data frame con el que vamos a trabajar) la cual se llamará 'datos'.
+En primer lugar, vamos a cargar todas las librerías que necesitamos. Y además, vamos a 'quitar' los warnings que nos puedan aparecer.
 
-```{r}
+Seguidamente, importaremos la información con la que vamos a trabajar y la guardaremos en una variable (el cual, más adelante, será el data frame con el que vamos a trabajar) y este se llamará 'datos'.
+
+```{r, message=FALSE}
 rm(list=ls()) 
 
 #Cargamos las librerías
@@ -30,15 +30,18 @@ suppressWarnings({
 #Importamos los datos
 datos <- read.csv("owid-covid-data.csv")
 
-#Vamos a echar un ojo a los datos:
-head(datos)
+#Visualizamos los datos, está en comentario para que a la hora de compilar el
+#documento no aparezcan reflejados dichos datos.
+
+#head(datos)
 ```
 
-A continuación, seleccionamos y cargamos los países que tenemos que mostrar en nuestro gráfico según el enunciado: 
+A continuación, seleccionamos y cargamos los países que tenemos que mostrar en nuestro gráfico según el enunciado:
+
 "United States", "Italy", "France", "Germany", "Canada", "Japan", "United Kingdom" y "Spain".
 
 ```{r}
-#Cargamos los países que tenemos que mostrar según el enunciado:
+#Cargamos los países que hemos de mostrar
 
 us <- datos[datos$location == "United States",]
 it <- datos[datos$location == "Italy",] 
@@ -50,8 +53,7 @@ uk <- datos[datos$location == "United Kingdom",]
 sp <- datos[datos$location == "Spain",]
 ```
 
-Una vez ya hemos seleccionado los países que vamos a representar, creamos un nuevo data frame únicamente 
-con la información de estos. Este nuevo data frame se va llamar 'df':
+Una vez ya hemos seleccionado los países que vamos a representar, creamos un nuevo data frame únicamente con la información de estos. Este nuevo data frame se va llamar 'df':
 
 ```{r}
 #Creamos un nuevo data frame con los datos que nos interesan
@@ -59,28 +61,26 @@ con la información de estos. Este nuevo data frame se va llamar 'df':
 
 df <- rbind(us, it, fr, ge, ca, ja, uk)
 
-#Lo mostramos:
-head(df)
+#Lo mostramos, mismo motivo de comentario que en el caso anterior
+#head(df)
 ```
 
 Ahora, convertimos la columna 'date' de España a formato fecha.
 
 ```{r}
-#Convertir la columna 'date' a formato de fecha
+#Convertimos la columna 'date' a formato de fecha
 sp$date <- as.Date(sp$date, format = "%Y-%m-%d")
 
-#Asegurarse de que la columna 'date' en el conjunto de datos df ya esté en 
+#Nos aseguramos de que la columna 'date' en el conjunto de datos df ya esté en 
 #formato de fecha.
 df$date <- as.Date(df$date, format = "%Y-%m-%d")
 
 ```
 
+El siguiente paso ya sería crear el gráfico. En el eje 'x' ponemos las fechas para que se vea en el paso del tiempo, y en el eje 'y' las muertes por millón. Para esta última variable cogemos smoothed (suavizadas), para que salga el gráfico más adecuado.
 
 ```{r}
-#Creamos el gráfico con la información. En el eje 'x', ponemos las fechas (que
-#se vea el tiempo) y en el eje 'y' las muertes por millón. Cogemos smoothed
-#para que salga el gráfico más adecuado.
-
+#Creamos el gráfico con la información que tenemos
 gr <- ggplot(df, mapping = aes(x = date, y = new_deaths_smoothed_per_million, 
                                group = location))
 
@@ -98,26 +98,29 @@ gr_col <- gr + geom_line(aes(color = location)) +
 
 #Ponemos como se va a mostrar la fecha:
 gr_col_fecha <- gr_col + scale_x_date(date_labels = "%b %d, %Y") +
+  
   #Para que vaya de 2 en 2 y el expand para que el 0 coincida con el eje x
   scale_y_continuous(breaks=seq(0, 18, by=2), expand = c(0, 0)) + 
   geom_hline(yintercept = c(2, 4, 6, 8, 10, 12, 14, 16, 18), color = "gray80", 
              linetype = "dashed", size = 0.2)
 
-#Añadimos nombres a los ejes además del título y subtítulo.
-#Establecemos 'caption' donde quedará reflejada la fuente de los datos:
+#Añadimos el título y subtítulo. Tenemos en cuenta que, en este caso, no sería
+#necesario poner nombres a los ejes pues el título del gráfico ya da la 
+#suficiente información.
+
+#Además, establecemos 'caption' donde quedará reflejada la fuente de los datos:
 
 gr_final <- gr_col_fecha + labs(title = "Daily new confirmed COVID-19 deaths per million people - Grupo K", 
   subtitle = "7-day rolling average. For some countries the number of confirmed deaths is much lower than the true number of deaths. 
                                 This is because of limited testing and challenges in the attribution of the cause of death",
-  x = "Time", y = "New Deaths per Million", 
+  x = "", y = "", 
 caption = "Source: Johns Hopkins University CSSE COVID-19 Data") +
   
-  # Añadimos España más grueso y de color rojo
+  #Añadimos España más grueso y de color rojo
   geom_line(data = sp, aes(x = date, y = new_deaths_smoothed_per_million), 
+            
+            #Con la función 'theme_classic' ponemos el fondo en blanco
             color = "red", linewidth = 1.1) + theme_classic()
-
-#Con la función 'theme_classic' ponemos el fondo en blanco
-  
 
 #Hacemos el subtítulo más pequeño para que se visualice
 #de manera correcta:
@@ -128,25 +131,22 @@ gr_final
 ```
 
 A continuación, una vez hemos terminado nuestro gráfico, vamos a hacerlo interactivo. 
-Esto lo conseguimos con la función 'ggplotly()' pasándole como argumento el nombre de nuestro gráfico, en este caso: "gr_final". De esta manera, podemos observar de manera más detallada la información que este contiene, como por ejemplo las muertes exactas en un determiando pais en un día en concreto. Esto nos permite extraer conclusiones mucho más específicas.
+
+Esto lo conseguimos con la función 'ggplotly()' pasándole como argumento el nombre de nuestro gráfico, en este caso: "gr_final". De esta forma, podemos observar de manera más detallada la información que este contiene, como por ejemplo, las muertes exactas en un determiando país en un día en concreto. Esto nos permite extraer conclusiones mucho más específicas.
 
 ```{r}
-# Convertimos a gráfico interactivo con plotly
+#Convertimos a gráfico interactivo con plotly
 final <- ggplotly(gr_final)
 
-# Añadimos subtítulo, leyenda y caption al gráfico interactivo. 
+#Añadimos subtítulo y leyenda al gráfico interactivo. 
 final <- final %>%
   layout(
     legend = list(title = list(text = "Country")),
     title = list(text = "Daily new confirmed COVID-19 deaths per million people - Grupo K"),
-    xaxis = list(title = "Time"),
-    yaxis = list(title = "New Deaths per Million"),
-    caption = "Source: Johns Hopkins University CSSE COVID-19 Data",
     annotations = list(
-      text = "7-day rolling average. For some countries the number of confirmed deaths is much
-      lower than the true number of deaths. This is because of limited testing and challenges
-      in the attribution of the cause of death",
-      x = 0.5,
+      text = "7-day rolling average. For some countries the number of confirmed deaths is much lower than the true number of deaths. 
+      This is because of limited testing and challenges in the attribution of the cause of death",
+      x = 0.5, #ubicación del subtítulo
       y = 1.05,
       xref = "paper",
       yref = "paper",
@@ -155,13 +155,26 @@ final <- final %>%
     )
   )
 
+#Añadimos la fuente como una nueva anotación en caption.
+final <- final %>%
+  layout(
+    annotations = list(
+      text = "Source: Johns Hopkins University CSSE COVID-19 Data",
+      x = 1, #ubicación del caption
+      y = -0.2,
+      xref = "paper",
+      yref = "paper",
+      showarrow = FALSE,
+      font = list(size = 10) #tamaño del caption
+    )
+  )
+
 # Mostramos gráfico interactivo
 final
 ```
-A través de nuestro gráfico, podemos extraer una serie de conclusiones. 
-En el 2020, España y Reino Unido tuvieron algunos de sus picos más altos, es decir, un mayor número de muertes. 
-En el caso de Reino Unido, esto se repitió en 2021.
-Por otra parte la tendencia de muerte de los demás países es muy similar entre todos estos, el 2021 es donde la 
-mayoría se encuentran más afectados, en concreto Japón despunta en el 2023 con otro pico considerablemente alto de muertes, 
-mientras que los otros países siguen una tendencia de descenso, en cuanto a muertes por COVID se refiere, l
-a cual se mantiene en la mayoría de los casos en este 2024.
+A través de nuestro gráfico, podemos extraer una serie de conclusiones:
+
+En el 2020, España y Reino Unido tuvieron algunos de sus picos más altos, es decir, un mayor número de muertes. En el caso de Reino Unido, esto se repitió en 2021.
+
+Por otra parte la tendencia de muerte de los demás países es muy similar entre todos estos, el 2021 es donde la mayoría se encuentran más afectados. En concreto, Japón despunta en el 2023 con otro pico considerablemente alto de muertes, 
+mientras que los otros países siguen una tendencia de descenso, en cuanto a muertes por COVID se refiere. La cual, se mantiene en la mayoría de los casos en este 2024.
