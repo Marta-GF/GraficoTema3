@@ -96,8 +96,18 @@ gr_col <- gr + geom_line(aes(color = location)) +
   #Colores como en el ejemplo
   scale_color_manual(values = colores)
 
-#Ponemos como se va a mostrar la fecha:
-gr_col_fecha <- gr_col + scale_x_date(date_labels = "%b %d, %Y") +
+#Definimos las fechas que queremos mostrar en el eje x
+fechas_mostrar <- as.Date(c("2020-05-13", "2021-04-08","2022-03-24", 
+                            "2023-06-02", "2024-02-29"))
+
+#Convertimos las fechas a formato que ggplot puede entender
+fechas_labels <- format(fechas_mostrar, "%b %d, %Y")
+
+# Ponemos como se va a mostrar la fecha y las fechas específicas que queremos
+#mostrar
+gr_col_fecha <- gr_col + scale_x_date(date_labels = "%b %d, %Y", 
+                                      breaks = fechas_mostrar, labels =
+                                        fechas_labels) +
   
   #Para que vaya de 2 en 2 y el expand para que el 0 coincida con el eje x
   scale_y_continuous(breaks=seq(0, 18, by=2), expand = c(0, 0)) + 
@@ -135,41 +145,43 @@ A continuación, una vez hemos terminado nuestro gráfico, vamos a hacerlo inter
 Esto lo conseguimos con la función 'ggplotly()' pasándole como argumento el nombre de nuestro gráfico, en este caso: "gr_final". De esta forma, podemos observar de manera más detallada la información que este contiene, como por ejemplo, las muertes exactas en un determiando país en un día en concreto. Esto nos permite extraer conclusiones mucho más específicas.
 
 ```{r}
-#Convertimos a gráfico interactivo con plotly
-final <- ggplotly(gr_final)
+#Convertimos a gráfico interactivo con plotly.
 
-#Añadimos subtítulo y leyenda al gráfico interactivo. 
-final <- final %>%
-  layout(
-    legend = list(title = list(text = "Country")),
+# Añadimos subtítulo y leyenda al gráfico interactivo, pues a este no se añaden
+# automáticamente habiéndolas definido en el normal.
+final <- ggplotly(gr_final) %>%
+  layout( #Bajamos un poco a leyenda para que no choque con el subtítulo
+    legend = list(title = list(text = "Country"), 
+                  x = 1.05, y = 0.5, #posición de la leyenda
+                  xanchor = "left", yanchor = "middle"), #anclaje de la leyenda
+
     title = list(text = "Daily new confirmed COVID-19 deaths per million people - Grupo K"),
     annotations = list(
-      text = "7-day rolling average. For some countries the number of confirmed deaths is much lower than the true number of deaths. 
-      This is because of limited testing and challenges in the attribution of the cause of death",
-      x = 0.5, #ubicación del subtítulo
-      y = 1.05,
-      xref = "paper",
-      yref = "paper",
-      showarrow = FALSE,
-      font = list(size = 10) #tamaño del subtítulo
+      list(
+        text = "7-day rolling average. For some countries the number of confirmed deaths is much lower than the true number of 
+                deaths. This is because of limited testing and challenges in the attribution of the cause of death",
+        x = 0, #ubicación del subtítulo
+        y = 1.05,
+        xref = "paper",
+        yref = "paper",
+        showarrow = FALSE,
+        font = list(size = 10) #tamaño del subtítulo
+      ),
+      
+      #Además, añadimos el caption por el mismo motivo
+      list(
+        text = "Source: Johns Hopkins University CSSE COVID-19 Data",
+        x = 1.35, #ubicación del caption
+        y = -0.1,
+        xref = "paper",
+        yref = "paper",
+        showarrow = FALSE,
+        font = list(size = 10) #tamaño del caption
+      )
     )
   )
 
-#Añadimos la fuente como una nueva anotación en caption.
-final <- final %>%
-  layout(
-    annotations = list(
-      text = "Source: Johns Hopkins University CSSE COVID-19 Data",
-      x = 1, #ubicación del caption
-      y = -0.2,
-      xref = "paper",
-      yref = "paper",
-      showarrow = FALSE,
-      font = list(size = 10) #tamaño del caption
-    )
-  )
-
-# Mostramos gráfico interactivo
+#Mostramos el gráfico interactivo
 final
 ```
 A través de nuestro gráfico, podemos extraer una serie de conclusiones:
