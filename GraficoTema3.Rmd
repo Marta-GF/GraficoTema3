@@ -3,8 +3,8 @@ title: 'Proyecto visualización: Imagen Covid'
 author: "Grupo K"
 date: "2024-03-05"
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -181,8 +181,10 @@ final <- ggplotly(gr_final) %>%
     )
   )
 
-#Mostramos el gráfico interactivo
-final
+#Mostramos el gráfico interactivo, para compilarlo en pdf lo comentamos, pues
+#este tipo de archivo no permite los gráficos interactivos. Se muestra como
+#tal en el html.
+#final
 ```
 A través de nuestro gráfico, podemos extraer una serie de conclusiones:
 
